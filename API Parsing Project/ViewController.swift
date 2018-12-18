@@ -1,5 +1,3 @@
-
-
 import UIKit
 
 struct All: Decodable {
@@ -16,7 +14,7 @@ enum CodingKeys: String, CodingKey {
 
 class ViewController: UIViewController {
     
-    let fact: String = ""
+    var factArray: [String] = []
     
     @IBOutlet weak var catFactLabel: UILabel!
     //let APIKey = String()
@@ -30,59 +28,38 @@ class ViewController: UIViewController {
         parse()
     }
     
-    func parse() {
-        let jsonUrlString = "https://cat-fact.herokuapp.com/facts/\(fact)"
+    func parse() -> String {
+        let jsonUrlString = "https://cat-fact.herokuapp.com/facts/"
+        var randomFact = String()
         guard let url = URL(string: jsonUrlString) else {return}
         URLSession.shared.dataTask(with: url) { (data, response, err) in
             guard let data = data else{ return }
             do {
                 let facts = try? JSONDecoder().decode(All.self, from: data)
-                print(facts?.all)
-                for fact in facts{
-                    print(fact)
+                //               print(facts?.all)
+                for fact in (facts?.all)! {
+                    self.factArray.append(fact.text)
+                   randomFact = self.factArray.randomElement()!
+//                    print(fact.text)
+//                    print(self.factArray)
+                    print(self.factArray.count)
                 }
             }
-            //                if let jsonData = try? JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! NSDictionary {
-            //                    print(jsonData["all"])
-            //                    for result in jsonData {
-            //                    }
-        }
-    }.resume()
-}
-
-
-func displayInfo(catfact: String){
-    DispatchQueue.main.async {
-        self.catFactLabel.text = "fact: \(catfact)"
+            }.resume()
+        return randomFact
     }
+    
+    
+    func displayInfo(catfact: String){
+        DispatchQueue.main.async {
+            self.catFactLabel.text = "fact: \(catfact)"
+        }
+        
+    }
+    
+    
+    
 }
-//APIKey = ""
-//        parse()
-
-//    func parse() {
-//
-//        let jsonUrlString = "https://cat-fact.herokuapp.com/facts"
-//        guard let url = URL(string: jsonUrlString) else { return }
-//        URLSession.shared.dataTask(with: url){ (data, response, err) in
-//            guard let data = data else { return }
-//            do {
-//                if let jsonData = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as! NSDictionary {
-//                }
-//            }
-//
-//        } catch let jsonErr {
-//            print("error serializing data:", jsonErr)
-//        }
-//    }
-
-}
-
-
-
-
-
-
-
 
 
 
