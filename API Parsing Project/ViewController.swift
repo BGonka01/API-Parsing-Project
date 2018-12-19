@@ -15,22 +15,23 @@ enum CodingKeys: String, CodingKey {
 class ViewController: UIViewController {
     
     var factArray: [String] = []
+    var randomFact = String()
     
     @IBOutlet weak var catFactLabel: UILabel!
     //let APIKey = String()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        parse()
     }
     
     @IBAction func CatFacts(_ sender: Any) {
-        parse()
+        let randomNumber = Int(arc4random_uniform(168))
+        parse(number: randomNumber)
+//        print(randomNumber)
     }
     
-    func parse() -> String {
+    func parse(number: Int) {
         let jsonUrlString = "https://cat-fact.herokuapp.com/facts/"
-        var randomFact = String()
         guard let url = URL(string: jsonUrlString) else {return}
         URLSession.shared.dataTask(with: url) { (data, response, err) in
             guard let data = data else{ return }
@@ -39,14 +40,16 @@ class ViewController: UIViewController {
                 //               print(facts?.all)
                 for fact in (facts?.all)! {
                     self.factArray.append(fact.text)
-                   randomFact = self.factArray.randomElement()!
 //                    print(fact.text)
-//                    print(self.factArray)
-                    print(self.factArray.count)
+//                    print(self.factArray[0]) //we know this works for only the first element.
+//                    print(self.factArray.count)
                 }
+                print(self.factArray[number])//endIndex is 168
+                self.randomFact = self.factArray[number]
             }
             }.resume()
-        return randomFact
+        
+            catFactLabel.text = randomFact
     }
     
     
